@@ -1,0 +1,24 @@
+[project]
+name = "mcp-server-biliscribe"
+version = "0.8.0"
+description = "A MCP Server that extracts and formats Bilibili video content into structured text, optimized for LLM processing and analysis."
+authors = [
+    {name = "43EVER"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.11"
+
+dependencies = [
+    "mcp[cli]>=1.6.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/43EVER/biliscribe"
+
+[project.scripts]
+mcp-server-biliscribe = "mcp_server_biliscribe:main"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
