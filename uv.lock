@@ -26,17 +26,6 @@ wheels = [
 ]
 
 [[package]]
-name = "biliscribe"
-version = "0.6.0"
-source = { editable = "." }
-dependencies = [
-    { name = "mcp", extra = ["cli"] },
-]
-
-[package.metadata]
-requires-dist = [{ name = "mcp", extras = ["cli"], specifier = ">=1.6.0" }]
-
-[[package]]
 name = "certifi"
 version = "2025.4.26"
 source = { registry = "https://pypi.org/simple" }
@@ -157,6 +146,17 @@ cli = [
     { name = "python-dotenv" },
     { name = "typer" },
 ]
+
+[[package]]
+name = "mcp-server-biliscribe"
+version = "0.8.1"
+source = { editable = "." }
+dependencies = [
+    { name = "mcp", extra = ["cli"] },
+]
+
+[package.metadata]
+requires-dist = [{ name = "mcp", extras = ["cli"], specifier = ">=1.6.0" }]
 
 [[package]]
 name = "mdurl"
