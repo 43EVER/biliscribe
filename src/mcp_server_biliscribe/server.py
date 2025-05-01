@@ -26,7 +26,7 @@ async def bili_scribe(
     if "[Error]" in metadata:
         return metadata
     if use_audio:
-        body = transcribe_audio(video_url)
+        body = await transcribe_audio(video_url)
     else:
         body = get_subtitles(video_url)
 

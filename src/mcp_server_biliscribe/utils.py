@@ -29,3 +29,12 @@ class TempDir:
 
     def __exit__(self, exc_type, exc, tb):
         shutil.rmtree(self._tmp, ignore_errors=True)
+
+def float_sec_to_hhmmss(seconds: float) -> str:
+    """
+    秒转小时:分:秒
+    """
+    h = int(seconds // 3600)
+    m = int((seconds % 3600) // 60)
+    s = int(seconds % 60)
+    return f"{h:02}:{m:02}:{s:02}"

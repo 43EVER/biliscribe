@@ -1,6 +1,6 @@
 [project]
 name = "mcp-server-biliscribe"
-version = "0.8.2"
+version = "0.8.4"
 description = "A MCP Server that extracts and formats Bilibili video content into structured text, optimized for LLM processing and analysis."
 authors = [
     {name = "43EVER"}
@@ -10,6 +10,8 @@ readme = "README.md"
 requires-python = ">=3.11"
 
 dependencies = [
+    "aiohttp>=3.11.18",
+    "boto3>=1.38.6",
     "mcp[cli]>=1.6.0",
 ]
 
