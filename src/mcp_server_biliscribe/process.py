@@ -14,6 +14,7 @@ def get_yt_dlp_config() -> dict:
     return {
         "verbose": False,
         "quiet": True,
+        "noprogress": True,
         "format": "mp3/bestaudio/best",
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
