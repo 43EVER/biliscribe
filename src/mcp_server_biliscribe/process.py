@@ -7,46 +7,76 @@ import hashlib
 import boto3
 from botocore.config import Config
 from botocore.exceptions import NoCredentialsError
+from yt_dlp import YoutubeDL
+import json
 
-def get_video_meta(video_url: str) -> str:
-    out, code = exec_command(f"BBDown '{video_url}' -info")
-    if code != 0:
-        return f"[Error] 获取视频元数据失败：{out}"
-    def find(pattern: str) -> str:
-        m = re.search(pattern, out, re.MULTILINE)
-        return m.group(1).strip() if m else "N/A"
+def get_yt_dlp_config() -> dict:
+    return {
+        "verbose": False,
+        "quiet": True,
+        "format": "mp3/bestaudio/best",
+        "postprocessors": [{
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+        }],
+        "allow_multiple_audio_streams": True,
+    }
 
-    title = find(r"视频标题:\s*(.+)")
-    pubtime = find(r"发布时间:\s*(.+)")
-    return (
-        "=== 视频元数据 ===\n"
-        f"标题：{title}\n"
-        f"发布时间：{pubtime}\n"
-    )
+async def get_video_meta(video_url: str) -> str:
+    """
+    从视频 URL 中提取出 meta
+
+    >>> from mcp_server_biliscribe.process import get_video_meta
+    >>> import asyncio
+    >>> video_url = "https://www.bilibili.com/video/BV1giGzzLEZr"
+    >>> result = asyncio.run(get_video_meta(video_url))
+    >>> "[Error]" not in result
+    True
+    """
+    
+    with YoutubeDL(get_yt_dlp_config()) as ydl:
+        try:
+            info = ydl.extract_info(video_url, download=False)
+            json_info = ydl.sanitize_info(info)
+            title = json_info.get("title", "未知标题")
+            uploader = json_info.get("uploader", "未知上传者")
+            description = json_info.get("description", "未知描述")
+            tags = json_info.get("tags", "未知标签")
+            tags = ", ".join(tags) if isinstance(tags, list) else tags
+        except Exception as e:
+            return f"[Error] 获取视频元数据失败：{e}"
+    
+    return f"""
+    === 视频元数据 ===
+    标题：{title}
+    上传者：{uploader}
+    视频简介：{description}
+    标签：{tags}
+    """
 
 async def transcribe_audio(video_url: str) -> str:
     """
-    >>> from mcp_server_biliscribe.process import transcribe_audio
+    使用 yt-dlp 下载音频并转写为文本
+
+    >>> from mcp_server_biliscribe.process import transcribe_audio_by_ytdlp
     >>> import asyncio
-    >>> video_url = "BV1GmG1zwEgr"
-    >>> "[Error]" not in transcribe_audio(video_url)
+    >>> video_url = "https://www.bilibili.com/video/BV1giGzzLEZr"
+    >>> "Error" not in asyncio.run(transcribe_audio_by_ytdlp(video_url))
     True
     """
-    with TempDir(prefix="audio_") as workdir:
-        # 1. 下载纯音频
-        cmd1 = f"BBDown '{video_url}' --audio-only --work-dir {workdir} -F raw"
-        out, code = exec_command(cmd1)
-        if code != 0:
-            return f"[Error] 下载音频失败：{out}"
 
-        # 2. 找到文件并转成 mp3
-        src = os.path.join(workdir, os.listdir(workdir)[0])
-        dst = os.path.join(workdir, "out.mp3")
-        out, code = exec_command(f"ffmpeg -y -i '{src}' -codec:a libmp3lame -q:a 5 '{dst}'")
-        if code != 0:
-            return f"[Error] ffmpeg 转码失败：{out}"
+    # 下载纯音频
+    with TempDir(prefix="audio_") as workdir:
+        ydl_opts = get_yt_dlp_config()
+        ydl_opts["outtmpl"] = os.path.join(workdir, "raw")
+        with YoutubeDL(ydl_opts) as ydl:
+            try:
+                ydl.download([video_url])
+            except Exception as e:
+                return f"[Error] 下载音频失败：{e}"
         
-        # 3. upload to R2 storage
+        # upload to R2 storage
+        dst = os.path.join(workdir, "raw.mp3")
         public_url = upload_file_to_s3(dst)
         if "[Error]" in public_url:
             return public_url

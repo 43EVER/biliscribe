@@ -13,6 +13,7 @@ dependencies = [
     "aiohttp>=3.11.18",
     "boto3>=1.38.6",
     "mcp[cli]>=1.6.0",
+    "yt-dlp>=2025.4.30",
 ]
 
 [project.urls]
