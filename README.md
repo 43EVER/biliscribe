@@ -22,11 +22,24 @@ uvx mcp-server-biliscribe
 Before using this service, you need to prepare:<br/>
 在使用此服务之前，您需要准备：
 
-1. Cloudflare R2 access credentials - for storing processed video data<br/>
-   Cloudflare R2 访问凭据 - 用于存储处理后的视频数据
+1. Cloudflare R2 access credentials - for storing audio data<br/>
+   Cloudflare R2 访问凭据 - 用于存储音频数据
 
-2. Replicate API Key - for AI processing capabilities<br/>
-   Replicate API Key - 用于 AI 处理能力
+2. Replicate API Key - for whisperx calling<br/>
+   Replicate API Key - 用于 whisperx 调用
+
+## Environment Variables 环境变量
+
+You need to set the following environment variables:<br>
+您需要设置以下环境变量：
+
+```
+REPLICATE_API_TOKEN=r8_THIS_IS_REPLICATE_API_KEY
+S3_API_ENDPOINT=https://this_is_s3_api_endpoint.r2.cloudflarestorage.com
+BUCKET_NAME=this_is_your_bucket_name
+ACCESS_KEY=THIS_IS_YOUR_S3_AK
+SECRET_KEY=THIS_IS_YOUR_S3_SK
+```
 
 ## Communication Protocols 通信协议
 
