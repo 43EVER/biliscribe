@@ -177,7 +177,7 @@ async def audio_to_text(audio_file_url: str) -> str:
             "debug": False,
             "vad_onset": 0.5,
             "audio_file": audio_file_url,
-            "batch_size": 64,
+            "batch_size": 128,
             "vad_offset": 0.363,
             "diarization": False,
             "temperature": 0,
@@ -228,16 +228,3 @@ async def audio_to_text(audio_file_url: str) -> str:
         return f"[Error] 处理转写结果失败：{e}"
 
     return "\n".join(subs)
-
-def get_subtitles(video_url: str) -> str:
-    with TempDir(prefix="sub_") as workdir:
-        out, code = exec_command(
-            f"BBDown '{video_url}' --sub-only --work-dir {workdir} -F raw"
-        )
-        if code != 0:
-            return f"[Error] 获取字幕失败：{out}"
-        subfile = os.path.join(workdir, os.listdir(workdir)[0])
-        try:
-            return open(subfile, encoding="utf-8", errors="ignore").read()
-        except Exception as e:
-            return f"[Error] 读取字幕文件失败：{e}"

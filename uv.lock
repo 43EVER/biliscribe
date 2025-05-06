@@ -358,7 +358,7 @@ cli = [
 
 [[package]]
 name = "mcp-server-biliscribe"
-version = "0.8.5"
+version = "0.8.7"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },

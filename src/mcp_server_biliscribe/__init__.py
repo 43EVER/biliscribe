@@ -15,7 +15,7 @@ def main():
     serve()
 
 # 对外暴露的 API
-from .process import get_subtitles, get_video_meta, transcribe_audio
+from .process import get_video_meta, transcribe_audio
 
 # 控制 `from mcp_server_biliscribe import *` 时，哪些名字会被导入
-__all__ = ["get_subtitles", "get_video_meta", "transcribe_audio", "__version__"]
+__all__ = ["get_video_meta", "transcribe_audio", "__version__"]
