@@ -1,3 +1,7 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mcp-server-summary/biliscribe)
+
+---
+
 # biliscribe
 
 A MCP Server that extracts and formats Bilibili video content into structured text, optimized for LLM processing and analysis.
